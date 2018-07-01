@@ -345,11 +345,8 @@ const showCountryListOffline = () => {
             let option = document.createElement('option');
             option.setAttribute('value', data.value);
             option.appendChild(document.createTextNode(data.name));
-            if (data.status === 'from') {
                 document.getElementById(currencySelectFrom).appendChild(option);
-            } else if (data.status === 'to') {
-                document.getElementById(currencySelectTo).appendChild(option);
-            }
+                document.getElementById(currencySelectTo).appendChild(option.cloneNode(true));
         });
     }).then(() => {
         showCurrencySymbol(currencySelectFrom, currencySpanSymbolFrom);
@@ -371,6 +368,11 @@ ${message}
     }
 };
 
+const resetInputFields = () => {
+    document.getElementById(currencyInputFrom).value = '';
+    document.getElementById(currencyInputTo).value = '';
+};
+
 window.addEventListener('load', e => {
     if (navigator.onLine) {
         saveCountryListToDB();
@@ -386,12 +388,14 @@ window.addEventListener('online', () => {
     alert('You are back online!');
     showMessage('success', 'You are connected to the Internet. We will process conversion requests for all countries.');
     saveCountryListToDB();
+    resetInputFields();
 });
 
 window.addEventListener('offline', () => {
     alert('You are offline!');
     showMessage('danger', 'You are browsing offline. We will process conversion requests for only currencies that have been previously requested for.');
     showCountryListOffline();
+    resetInputFields();
 });
 
 showConversionHistory();
